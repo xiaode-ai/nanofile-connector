@@ -72,7 +72,7 @@ export function autoBumpAndRelease(
     });
 
     console.log(
-      `🚀 [nanofile-skills] 版本号自增: ${oldVersion} -> ${newVersion} (0-999 进位制)`,
+      `🚀 [nanofile-connector] 版本号自增: ${oldVersion} -> ${newVersion} (0-999 进位制)`,
     );
 
     // 4. Git 自动提交版本文件与工作流配置
@@ -90,12 +90,12 @@ export function autoBumpAndRelease(
       cwd: rootDir,
       stdio: "inherit",
     });
-    console.log(`🏷️ [nanofile-skills] 本地 Git 标签已创建: ${tagName}`);
+    console.log(`🏷️ [nanofile-connector] 本地 Git 标签已创建: ${tagName}`);
 
     // 6. 推送到 GitHub 远程（分支 + 标签）
     execSync("git push origin main", { cwd: rootDir, stdio: "inherit" });
     execSync(`git push origin ${tagName}`, { cwd: rootDir, stdio: "inherit" });
-    console.log(`☁️ [nanofile-skills] 云端 Git 标签已推送: ${tagName}`);
+    console.log(`☁️ [nanofile-connector] 云端 Git 标签已推送: ${tagName}`);
 
     // 7. 使用 gh cli 自动创建 GitHub Release
     try {
@@ -107,7 +107,7 @@ export function autoBumpAndRelease(
         },
       );
       console.log(
-        `🎉 [nanofile-skills] GitHub Release 自动发布成功: ${tagName}`,
+        `🎉 [nanofile-connector] GitHub Release 自动发布成功: ${tagName}`,
       );
     } catch (ghErr) {
       console.warn(`⚠️ GitHub Release 创建跳过或需确认权限:`, ghErr.message);

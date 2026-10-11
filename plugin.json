@@ -5,7 +5,7 @@
   "version": "1.0.8",
   "description": "High-performance native Windows filesystem management, lightning search, tags, and favorites plugin for AI agents.",
   "logo": "assets/logo.png",
-  "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-skills/main/assets/logo.png",
+  "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/assets/logo.png",
   "suggestedPrompts": [
     "Search for files matching *.pdf in Downloads using NanoFile",
     "Find all files tagged with 'Project' and inspect their metadata",
@@ -16,7 +16,7 @@
     "url": "https://apps.microsoft.com/detail/9pgwd50gwcjw"
   },
   "homepage": "https://apps.microsoft.com/detail/9pgwd50gwcjw",
-  "repository": "https://github.com/xiaode-ai/nanofile-skills",
+  "repository": "https://github.com/xiaode-ai/nanofile-connector",
   "license": "MIT",
   "skills": [
     "skills/items",

@@ -25,7 +25,7 @@
 ### 📁 仓库三层架构体系 (Three-Tier Architecture)
 
 ```text
-nanofile-skills/
+nanofile-connector/
 ├── plugins/                  # 🧩 1. 插件生态层 (Agent Plugins & Toolkits)
 │   ├── manifest.json         # 统一插件清单定义 (Plugin Manifest)
 │   ├── cursor/.cursorrules   # Cursor / Windsurf / Copilot 专用 Agent 规则插件
@@ -59,7 +59,7 @@ nanofile-skills/
 | Agent 生态 / 平台                   | 官方插件规范标准                    | 对应开源文件                                                           | 使用方法                                                                          |
 | :---------------------------------- | :---------------------------------- | :--------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
 | **Smithery.ai / MCP Registry**      | 官方 MCP 服务包清单标准             | [`smithery.yaml`](smithery.yaml)                                       | 平台自动收录，开发者可通过 `npx -y @smithery/cli install nanofile` 一键注册       |
-| **OpenAI Codex 官方插件市场**       | 官方 Marketplace 目录规范           | [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) | 通过 `codex plugin marketplace add xiaode-ai/nanofile-skills` 一键发现与安装      |
+| **OpenAI Codex 官方插件市场**       | 官方 Marketplace 目录规范           | [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) | 通过 `codex plugin marketplace add xiaode-ai/nanofile-connector` 一键发现与安装      |
 | **Dify 1.0 官方插件体系**           | 独立 Plugin + Provider + Tools 规范 | [`plugins/dify/manifest.yaml`](plugins/dify/manifest.yaml)             | Dify 官方插件目录标准，支持在 Dify 平台一键打包与安装自定义工具插件               |
 | **Cursor / Windsurf / Copilot**     | IDE 提示词规则与 Agent 上下文规约   | [`plugins/cursor/.cursorrules`](plugins/cursor/.cursorrules)           | 直接将 `.cursorrules` 复制到项目根目录下，代码 Agent 即刻具备调用 NanoFile 的感知 |
 | **Claude / Antigravity Plugins**    | 官方 Agent Plugin 标准清单          | [`plugin.json`](plugin.json)                                           | 声明工具列表、技能路径与 MCP 服务关联，宿主自动装载                               |
@@ -132,7 +132,7 @@ nanofile-skills/
 | **GitHub Copilot**         | 原生 MCP + Copilot Rules       | VS Code Copilot MCP 设置，自动识别 [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
 | **Google Antigravity**     | 原生 MCP + `plugin.json`       | 官方原生识别根目录 [`plugin.json`](plugin.json) 与 `skills/`                                            |
 | **OpenCode** (Continue)    | 原生 MCP (`stdio`)             | Continue / OpenCode `config.json` 中配置 `nanofile`                                                     |
-| **OpenAI Codex**           | 官方插件市场 (Marketplace)     | `codex plugin marketplace add xiaode-ai/nanofile-skills`，安装 `nanofile`                               |
+| **OpenAI Codex**           | 官方插件市场 (Marketplace)     | `codex plugin marketplace add xiaode-ai/nanofile-connector`，安装 `nanofile`                               |
 | **xAI Grok**               | Function Calling (Tool Schema) | 调用 [`mcp/schema.json`](mcp/schema.json) 工具声明                                                      |
 | **OpenClaw**               | 原生 MCP 客户端                | 直接配置本地 MCP 服务端命令 `nanofile.exe --mcp`                                                        |
 | **Hermes** (Nous Research) | Tool Calling / Schema          | 导入 [`mcp/schema.json`](mcp/schema.json) 工具规范                                                      |

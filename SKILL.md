@@ -1,9 +1,9 @@
 ---
-name: nanofile-skills
+name: nanofile-connector
 description: Connect your AI assistant to NanoFile for high-performance local file search, file/folder operations, default app management, tag catalog, installed app management, and favorites.
 ---
 
-# NanoFile Agent Skills (7 大核心能力全集)
+# NanoFile Agent Connector & Skills (7 大核心能力全集)
 
 > 💡 **【推荐调用建议 (Best Practices)】**：
 >
@@ -18,7 +18,7 @@ description: Connect your AI assistant to NanoFile for high-performance local fi
 NanoFile MCP 包含 27 个标准工具，检索能力全盘收拢于 `search_items`：
 
 ```
-nanofile-skills/
+nanofile-connector/
 ├── skills/
 │   ├── items/       # 1. 项目读写 (3 工具) - 全能检索 (支持文件/文件夹/扩展名) 与基础操作
 │   ├── files/       # 2. 文件读写 (5 工具) - 文本读写、打开方式与应用启动

@@ -7,9 +7,9 @@
     "url": "https://apps.microsoft.com/detail/9pgwd50gwcjw"
   },
   "homepage": "https://apps.microsoft.com/detail/9pgwd50gwcjw",
-  "repository": "https://github.com/xiaode-ai/nanofile-skills",
+  "repository": "https://github.com/xiaode-ai/nanofile-connector",
   "license": "MIT",
-  "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-skills/main/assets/logo.png",
+  "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/assets/logo.png",
   "skills": [
     "skills/items",
     "skills/files",

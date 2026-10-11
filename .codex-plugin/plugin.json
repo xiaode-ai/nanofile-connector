@@ -5,7 +5,7 @@
   "interface": {
     "displayName": "NanoFile",
     "description": "High-performance native filesystem, lightning search, tags, and favorites plugin for AI agents.",
-    "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-skills/main/assets/logo.png"
+    "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/assets/logo.png"
   },
   "skills": [
     "skills/items",
