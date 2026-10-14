@@ -1,0 +1,278 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "NanoFile 本地文件管理与极速搜索插件 (字节跳动 豆包 & 扣子)",
+    "description": "专为字节跳动豆包 (Doubao) 与扣子 (Coze) 智能体打造的高性能本地 Windows 文件管理、毫秒级极速搜索与标签工具插件。",
+    "version": "1.0.8"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5200",
+      "description": "本地 NanoFile 运行实例 (通过 stdio 桥接或本地代理转发)"
+    }
+  ],
+  "paths": {
+    "/api/items/search": {
+      "post": {
+        "operationId": "search_items",
+        "summary": "统一全盘极速检索文件与文件夹",
+        "description": "高性能极速检索本地文件或文件夹，支持扩展名过滤、检索范围（通用常用目录、全盘或指定路径）及检索模式。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["query"],
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "description": "搜索关键词或名称片段"
+                  },
+                  "item_type": {
+                    "type": "string",
+                    "enum": ["all", "file", "folder"],
+                    "description": "项目类型过滤：all(全部)、file(仅文件)、folder(仅文件夹)"
+                  },
+                  "extensions": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "文件扩展名过滤列表，如 ['pdf', 'docx']"
+                  },
+                  "scope": {
+                    "type": "string",
+                    "enum": ["common", "global", "directory"],
+                    "description": "检索范围：common(常用目录)、global(全盘驱动器)、directory(指定目录)"
+                  },
+                  "directory_path": {
+                    "type": "string",
+                    "description": "当 scope 为 directory 时的目标文件夹绝对路径"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": ["auto", "turbo", "realtime"],
+                    "description": "搜索模式：turbo(极速内存索引)、realtime(实时扫描)、auto(跟随系统)"
+                  },
+                  "max_results": {
+                    "type": "integer",
+                    "description": "最大返回条数，0 或不传表示不截断"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "检索结果列表",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/files/read": {
+      "post": {
+        "operationId": "read_file_content",
+        "summary": "读取文本文件内容",
+        "description": "读取指定文本文件的全部或部分内容，支持字节偏移与行数限制。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["file_path"],
+                "properties": {
+                  "file_path": {
+                    "type": "string",
+                    "description": "目标文件的绝对路径"
+                  },
+                  "byte_offset": {
+                    "type": "integer",
+                    "description": "读取起始字节偏移量"
+                  },
+                  "max_bytes": {
+                    "type": "integer",
+                    "description": "最大读取字节数"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "文本内容",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/files/open": {
+      "post": {
+        "operationId": "open_file",
+        "summary": "以系统默认方式或指定程序打开文件",
+        "description": "在 Windows 桌面端打开指定文件。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["file_path"],
+                "properties": {
+                  "file_path": {
+                    "type": "string",
+                    "description": "文件的绝对路径"
+                  },
+                  "app_path": {
+                    "type": "string",
+                    "description": "可选的自定义关联打开程序路径"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "操作结果",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/folders/list": {
+      "post": {
+        "operationId": "list_folder_contents",
+        "summary": "列出文件夹下子项目",
+        "description": "列出指定文件夹下的直接子文件与子文件夹列表。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["folder_path"],
+                "properties": {
+                  "folder_path": {
+                    "type": "string",
+                    "description": "目标文件夹绝对路径"
+                  },
+                  "show_hidden": {
+                    "type": "boolean",
+                    "description": "是否包含隐藏文件"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "目录条目列表",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tags/list": {
+      "post": {
+        "operationId": "list_all_tags",
+        "summary": "获取所有文件标签列表",
+        "description": "列出用户创建的所有标签及其关联项目统计。",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "标签列表",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/metadata/get": {
+      "post": {
+        "operationId": "get_item_metadata",
+        "summary": "获取文件或文件夹详细元数据",
+        "description": "获取指定路径的文件属性、创建/修改时间，文件夹包含递归大小与项目统计。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["path"],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "目标文件或文件夹绝对路径"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "元数据信息",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/favorites/list": {
+      "post": {
+        "operationId": "get_favorites",
+        "summary": "获取常用收藏夹目录列表",
+        "description": "返回当前用户在 NanoFile 中固定的常用快速访问与收藏夹条目。",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "收藏夹列表",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

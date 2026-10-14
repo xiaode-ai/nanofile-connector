@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "nanofile-doubao-plugin",
+  "displayName": "NanoFile 本地文件管理与极速搜索 (豆包 & 扣子官方插件)",
+  "version": "1.0.8",
+  "description": "专为字节跳动豆包 (Doubao) 与扣子 (Coze) 智能体打造的高性能本地 Windows 文件管理、毫秒级极速搜索与标签工具插件。",
+  "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/assets/logo.png",
+  "author": "NanoFile Team",
+  "homepage": "https://apps.microsoft.com/detail/9pgwd50gwcjw",
+  "repository": "https://github.com/xiaode-ai/nanofile-connector",
+  "openapi": "./openapi.json",
+  "runtime": {
+    "engine": "nanofile.exe",
+    "protocol": "stdio/mcp"
+  }
+}

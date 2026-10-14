@@ -7,7 +7,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
 const pluginJsonPath = resolve(rootDir, "plugin.json");
 const manifestJsonPath = resolve(rootDir, "plugins", "manifest.json");
-const claudeMarketplacePath = resolve(rootDir, ".claude-plugin", "marketplace.json");
+const claudeMarketplacePath = resolve(
+  rootDir,
+  ".claude-plugin",
+  "marketplace.json",
+);
 const claudePluginPath = resolve(rootDir, ".claude-plugin", "plugin.json");
 const codexPluginPath = resolve(rootDir, ".codex-plugin", "plugin.json");
 
@@ -61,13 +65,21 @@ export function autoBumpAndRelease(
       } catch (_) {}
     };
 
-    syncJsonVersion(manifestJsonPath, (d) => { d.version = newVersion; });
-    syncJsonVersion(claudePluginPath, (d) => { d.version = newVersion; });
-    syncJsonVersion(codexPluginPath, (d) => { d.version = newVersion; });
+    syncJsonVersion(manifestJsonPath, (d) => {
+      d.version = newVersion;
+    });
+    syncJsonVersion(claudePluginPath, (d) => {
+      d.version = newVersion;
+    });
+    syncJsonVersion(codexPluginPath, (d) => {
+      d.version = newVersion;
+    });
     syncJsonVersion(claudeMarketplacePath, (d) => {
       d.version = newVersion;
       if (Array.isArray(d.plugins)) {
-        d.plugins.forEach((p) => { p.version = newVersion; });
+        d.plugins.forEach((p) => {
+          p.version = newVersion;
+        });
       }
     });
 
@@ -76,10 +88,13 @@ export function autoBumpAndRelease(
     );
 
     // 4. Git 自动提交版本文件与工作流配置
-    execSync("git add plugin.json plugins/manifest.json .claude-plugin .codex-plugin .github scripts", {
-      cwd: rootDir,
-      stdio: "inherit",
-    });
+    execSync(
+      "git add plugin.json plugins/manifest.json .claude-plugin .codex-plugin .github scripts",
+      {
+        cwd: rootDir,
+        stdio: "inherit",
+      },
+    );
     execSync(`git commit -m "release: ${tagName} - ${commitMessage}"`, {
       cwd: rootDir,
       stdio: "inherit",

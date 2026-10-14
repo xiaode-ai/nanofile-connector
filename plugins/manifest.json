@@ -12,9 +12,7 @@
   "entrypoint": {
     "type": "mcp_stdio",
     "command": "nanofile.exe",
-    "args": [
-      "--mcp"
-    ],
+    "args": ["--mcp"],
     "schema": "../mcp/schema.json"
   },
   "runtimeRequirements": {
@@ -71,6 +69,7 @@
     "smithery_mcp": "../smithery.yaml",
     "antigravity_claude": "../plugin.json",
     "dify_plugin": "./dify/manifest.yaml",
+    "doubao_plugin": "./doubao/manifest.json",
     "cursor_rules": "./cursor/.cursorrules",
     "langchain_toolkit": "./langchain/toolkit.json"
   }
