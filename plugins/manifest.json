@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "name": "nanofile-agent-plugin",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "displayName": "NanoFile Agent Plugin",
   "description": "Native Windows filesystem management, lightning search, and tags plugin for AI agents.",
   "author": "NanoFile Team",
@@ -12,7 +12,9 @@
   "entrypoint": {
     "type": "mcp_stdio",
     "command": "nanofile.exe",
-    "args": ["--mcp"],
+    "args": [
+      "--mcp"
+    ],
     "schema": "../mcp/schema.json"
   },
   "runtimeRequirements": {

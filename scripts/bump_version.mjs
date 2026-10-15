@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
@@ -14,6 +14,19 @@ const claudeMarketplacePath = resolve(
 );
 const claudePluginPath = resolve(rootDir, ".claude-plugin", "plugin.json");
 const codexPluginPath = resolve(rootDir, ".codex-plugin", "plugin.json");
+const doubaoManifestPath = resolve(
+  rootDir,
+  "plugins",
+  "doubao",
+  "manifest.json",
+);
+const doubaoOpenApiPath = resolve(
+  rootDir,
+  "plugins",
+  "doubao",
+  "openapi.json",
+);
+const packageJsonPath = resolve(rootDir, "package.json");
 
 /**
  * 0-999 进位升级版本号:
@@ -58,11 +71,14 @@ export function autoBumpAndRelease(
     // 3. 同步写入 plugins/manifest.json 及各类平台清单
     const syncJsonVersion = (filePath, updater) => {
       try {
+        if (!existsSync(filePath)) return;
         const fileContent = readFileSync(filePath, "utf8");
         const data = JSON.parse(fileContent);
         updater(data);
         writeFileSync(filePath, JSON.stringify(data, null, 2) + "\n", "utf8");
-      } catch (_) {}
+      } catch (e) {
+        console.warn(`[syncJsonVersion] 跳过更新 ${filePath}:`, e.message);
+      }
     };
 
     syncJsonVersion(manifestJsonPath, (d) => {
@@ -82,29 +98,44 @@ export function autoBumpAndRelease(
         });
       }
     });
+    syncJsonVersion(doubaoManifestPath, (d) => {
+      d.version = newVersion;
+    });
+    syncJsonVersion(doubaoOpenApiPath, (d) => {
+      if (d.info) {
+        d.info.version = newVersion;
+      }
+    });
+    syncJsonVersion(packageJsonPath, (d) => {
+      d.version = newVersion;
+    });
 
     console.log(
       `🚀 [nanofile-connector] 版本号自增: ${oldVersion} -> ${newVersion} (0-999 进位制)`,
     );
 
-    // 4. Git 自动提交版本文件与工作流配置
-    execSync(
-      "git add plugin.json plugins/manifest.json .claude-plugin .codex-plugin .github scripts",
-      {
-        cwd: rootDir,
-        stdio: "inherit",
-      },
-    );
+    // 4. Git 自动暂存所有改动并提交
+    execSync("git add -A", {
+      cwd: rootDir,
+      stdio: "inherit",
+    });
     execSync(`git commit -m "release: ${tagName} - ${commitMessage}"`, {
       cwd: rootDir,
       stdio: "inherit",
     });
 
     // 5. 创建本地 Git Tag
-    execSync(`git tag -a ${tagName} -m "Release ${tagName}"`, {
-      cwd: rootDir,
-      stdio: "inherit",
-    });
+    try {
+      execSync(`git tag -a ${tagName} -m "Release ${tagName}"`, {
+        cwd: rootDir,
+        stdio: "inherit",
+      });
+    } catch (_) {
+      execSync(`git tag -f -a ${tagName} -m "Release ${tagName}"`, {
+        cwd: rootDir,
+        stdio: "inherit",
+      });
+    }
     console.log(`🏷️ [nanofile-connector] 本地 Git 标签已创建: ${tagName}`);
 
     // 6. 推送到 GitHub 远程（分支 + 标签）
@@ -115,7 +146,7 @@ export function autoBumpAndRelease(
     // 7. 使用 gh cli 自动创建 GitHub Release
     try {
       execSync(
-        `gh release create ${tagName} --title "${tagName}" --notes "Release ${tagName} for NanoFile Agent Skills & MCP Specification"`,
+        `gh release create ${tagName} --title "${tagName}" --generate-notes`,
         {
           cwd: rootDir,
           stdio: "inherit",
@@ -125,7 +156,20 @@ export function autoBumpAndRelease(
         `🎉 [nanofile-connector] GitHub Release 自动发布成功: ${tagName}`,
       );
     } catch (ghErr) {
-      console.warn(`⚠️ GitHub Release 创建跳过或需确认权限:`, ghErr.message);
+      try {
+        execSync(
+          `gh release create ${tagName} --title "${tagName}" --notes "Release ${tagName} for NanoFile Agent Connector & Skills"`,
+          {
+            cwd: rootDir,
+            stdio: "inherit",
+          },
+        );
+        console.log(
+          `🎉 [nanofile-connector] GitHub Release 自动发布成功 (固定说明): ${tagName}`,
+        );
+      } catch (fallbackErr) {
+        console.warn(`⚠️ GitHub Release 创建跳过或需确认权限:`, fallbackErr.message);
+      }
     }
 
     return newVersion;

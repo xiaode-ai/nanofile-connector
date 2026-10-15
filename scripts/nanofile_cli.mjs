@@ -1,6 +1,9 @@
 import { spawn, spawnSync } from "child_process";
 import { existsSync } from "fs";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // 优先探测全原生极速 CLI (nf.exe)
 function resolveNfCliExe() {

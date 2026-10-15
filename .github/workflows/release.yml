@@ -6,8 +6,6 @@ on:
       - 'v*'
     branches:
       - main
-    paths:
-      - 'plugin.json'
   workflow_dispatch:
 
 permissions:
@@ -62,5 +60,8 @@ jobs:
             echo "Creating GitHub Release for $TAG..."
             gh release create "$TAG" \
               --title "$TAG" \
-              --generate-notes
+              --generate-notes || \
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --notes "Release $TAG for NanoFile Agent Connector & Skills"
           fi

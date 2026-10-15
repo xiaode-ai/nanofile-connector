@@ -2,7 +2,7 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "nanofile",
   "displayName": "NanoFile Native FS & Search",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "High-performance native Windows filesystem management, lightning search, tags, and favorites plugin for AI agents.",
   "logo": "assets/logo.png",
   "icon": "https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/assets/logo.png",
@@ -30,7 +30,9 @@
   "mcpServers": {
     "nanofile": {
       "command": "nanofile.exe",
-      "args": ["--mcp"]
+      "args": [
+        "--mcp"
+      ]
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "nanofile",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "High-performance native Windows filesystem management, lightning search, tags, and favorites plugin for AI agents.",
   "author": {
     "name": "NanoFile Team",
