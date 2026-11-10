@@ -99,18 +99,18 @@ nanofile-connector/
 
 ### 📥 1. 安装 NanoFile 桌面应用 (底层原生驱动)
 
-所有 MCP 工具调用与原生 CLI 均由底层的 NanoFile 原生引擎驱动，零环境依赖：
+所有 MCP 工具调用与原生 CLI 均由底层的 NanoFile 原生引擎驱动；MCP 服务与 CLI 二进制为原生交付，无需 Node.js、Python 等运行时：
 
 - 🛒 **微软应用商店直达 Web 链接**：[Microsoft Store 商店详情页](https://apps.microsoft.com/detail/9pgwd50gwcjw)
 - ⚡ **Windows 一键唤起安装协议**：`ms-windows-store://pdp/?ProductId=9PGWD50GWCJW`
 
-> **免配环境说明**：无需安装 Node.js、Python 或任何重型运行时。安装商店应用后，Windows 会自动注册全局执行别名 `nanofile.exe` 与原生命令行工具 `nf.exe`。
+> **免配环境说明**：MCP 服务与 `nf.exe` 均为原生二进制，无需 Node.js、Python 等运行时（`SKILL.md` 中可选的脚本透传路径除外）。安装商店应用后，Windows **仅自动注册一个执行别名** `NanoFile.exe`（大小写不敏感，位于 `%LOCALAPPDATA%\Microsoft\WindowsApps`），因此 MCP 配置可直接写作 `nanofile.exe`。`nf.exe` **不在商店安装包内，也不会被自动注册**：它随本仓库 `cli/` 目录单独分发，需手动复制到 PATH 目录后才能在任意终端全局调用，详见下文第 3 节与 [CLI 指南](cli/README.md)。
 
 ---
 
 ### ⚙️ 2. MCP 服务配置 (ServerConfig)
 
-本地 STDIO 类型服务，无需任何公网地址，仅依赖微软商店安装后的全局执行别名 `nanofile.exe`。
+本地 STDIO 类型服务，无需任何公网地址，仅依赖微软商店安装后自动注册的执行别名 `NanoFile.exe`（大小写不敏感，配置中写作 `nanofile.exe`）。
 
 **ServerConfig**
 
@@ -136,7 +136,15 @@ nanofile-connector/
 
 ### ⚡ 3. 原生命令行工具 (Native CLI - `nf` / `nanofile-cli`)
 
-本仓库 [`cli/`](cli/) 目录下随附了预编译的单文件原生机器码程序 [`nf.exe`](cli/nf.exe) 与官方别名 [`nanofile-cli.exe`](cli/nanofile-cli.exe)（单文件约 330 KB，零外部解释器依赖）：
+本仓库 [`cli/`](cli/) 目录下随附了预编译的单文件原生机器码程序 [`nf.exe`](cli/nf.exe) 与官方别名 [`nanofile-cli.exe`](cli/nanofile-cli.exe)（单文件约 330 KB，无解释器依赖，但运行时需要本机已安装 NanoFile 桌面客户端）：
+
+> ⚠️ `nf.exe` 不随微软商店安装包分发。以下命令中的裸 `nf` 需先加入 PATH 才能全局调用，否则请在 `cli/` 目录下使用 `.\nf.exe`。全局安装（PowerShell）：
+>
+> ```powershell
+> Copy-Item .\nf.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\"
+> ```
+>
+> 该目录默认已在系统 PATH 中；`nanofile-cli.exe` 可用同样方式复制。
 
 - **毫秒级全盘极速检索**：`nf search "财务报表" --ext xlsx --limit 10`
 - **读取文件内容**：`nf cat "D:\docs\config.json" --limit 500`
@@ -221,7 +229,7 @@ node scripts/bump_version.mjs "feat: your commit message"
 
 1. **Plugin Ecosystem (`plugins/`)**: Ready-to-use plugins for Cursor rules, Dify toolsets, Doubao/Coze OpenAPI specifications, Trae, and LangChain toolkits.
 2. **Machine Protocol (`mcp/`)**: Full JSON Schema (`schema.json`) with 27 standard tools for automatic indexing by MCP Registries.
-3. **Native CLI (`cli/`)**: Standalone native Windows CLI binary ([`cli/nf.exe`](cli/nf.exe) / [`cli/nanofile-cli.exe`](cli/nanofile-cli.exe), ~330 KB) for terminal and sub-process execution without any dependencies.
+3. **Native CLI (`cli/`)**: Standalone native Windows CLI binary ([`cli/nf.exe`](cli/nf.exe) / [`cli/nanofile-cli.exe`](cli/nanofile-cli.exe), ~330 KB) for terminal and sub-process execution without interpreter/runtime dependencies (the NanoFile desktop app is still required at runtime).
 4. **Cognitive Skills (`skills/`)**: Natural language guidelines to help LLMs select optimal search modes and safe filesystem actions.
 
 ### 📥 1. Installation
@@ -231,9 +239,11 @@ Install NanoFile from the Microsoft Store:
 - 🛒 **Web**: [Microsoft Store Web Page](https://apps.microsoft.com/detail/9pgwd50gwcjw)
 - ⚡ **Protocol**: `ms-windows-store://pdp/?ProductId=9PGWD50GWCJW`
 
+> The Store package registers a single execution alias, `NanoFile.exe` (case-insensitive), in `%LOCALAPPDATA%\Microsoft\WindowsApps`, so MCP configs can use `nanofile.exe`. The `nf.exe` CLI is **not** included in the Store package and is **not** auto-registered: copy [`cli/nf.exe`](cli/nf.exe) into a PATH directory (for example `%LOCALAPPDATA%\Microsoft\WindowsApps`) to use `nf` globally.
+
 ### ⚙️ 2. MCP Configuration (ServerConfig)
 
-Local STDIO service. No public endpoint required — it relies only on the global execution alias `nanofile.exe` registered by the Microsoft Store installation.
+Local STDIO service. No public endpoint required — it relies only on the execution alias `NanoFile.exe` (case-insensitive, written as `nanofile.exe` below) registered by the Microsoft Store installation.
 
 **ServerConfig**
 
@@ -251,7 +261,7 @@ Local STDIO service. No public endpoint required — it relies only on the globa
 
 ### ⚡ 3. Native CLI Usage (`nf`)
 
-A precompiled single-binary native tool [`nf.exe`](cli/nf.exe) is included under [`cli/`](cli/):
+A precompiled single-binary native tool [`nf.exe`](cli/nf.exe) is included under [`cli/`](cli/). It is distributed separately from the Store package and needs the NanoFile desktop app at runtime. The bare `nf` commands below assume it has been copied into a PATH directory; otherwise run `.\nf.exe` from `cli/`:
 
 ```bash
 # Instant whole-disk search
