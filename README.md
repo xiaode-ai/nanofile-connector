@@ -56,6 +56,7 @@ nanofile-connector/
 ├── .claude-plugin/           # 📦 Claude Code 官方插件与市场规范
 ├── .codex-plugin/            # 📦 OpenAI Codex 插件清单
 ├── .agents/                  # 📦 通用 Agent 插件市场定义
+├── scripts/install.ps1       # 🧰 一行命令安装 CLI (下载并写入用户级 PATH)
 ├── SKILL.md                  # 全局 Master 技能总览 (可供外部 AI 宿主一键整体挂载)
 ├── README.md                 # 官方导航与接入说明
 ├── package.json              # 项目包清单与版本自增脚本命令
@@ -106,6 +107,12 @@ nanofile-connector/
 
 > **免配环境说明**：MCP 服务与 `nf.exe` 均为原生二进制，无需 Node.js、Python 等运行时（`SKILL.md` 中可选的脚本透传路径除外）。安装商店应用后，Windows **仅自动注册一个执行别名** `NanoFile.exe`（大小写不敏感，位于 `%LOCALAPPDATA%\Microsoft\WindowsApps`），因此 MCP 配置可直接写作 `nanofile.exe`。`nf.exe` **不在商店安装包内，也不会被自动注册**：它随本仓库 `cli/` 目录单独分发，需手动复制到 PATH 目录后才能在任意终端全局调用，详见下文第 3 节与 [CLI 指南](cli/README.md)。
 
+> **下一步（可选）**：如需在任意终端使用 `nf` 命令行工具，安装桌面端后只需在 PowerShell 中执行一行命令（详见第 3 节）：
+>
+> ```powershell
+> irm https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/scripts/install.ps1 | iex
+> ```
+
 ---
 
 ### ⚙️ 2. MCP 服务配置 (ServerConfig)
@@ -136,15 +143,30 @@ nanofile-connector/
 
 ### ⚡ 3. 原生命令行工具 (Native CLI - `nf` / `nanofile-cli`)
 
-本仓库 [`cli/`](cli/) 目录下随附了预编译的单文件原生机器码程序 [`nf.exe`](cli/nf.exe) 与官方别名 [`nanofile-cli.exe`](cli/nanofile-cli.exe)（单文件约 330 KB，无解释器依赖，但运行时需要本机已安装 NanoFile 桌面客户端）：
+本仓库 [`cli/`](cli/) 目录下随附了预编译的单文件原生机器码程序 [`nf.exe`](cli/nf.exe) 与官方别名 [`nanofile-cli.exe`](cli/nanofile-cli.exe)（单文件约 330 KB，无解释器依赖，但运行时需要本机已安装 NanoFile 桌面客户端）。
 
-> ⚠️ `nf.exe` 不随微软商店安装包分发。以下命令中的裸 `nf` 需先加入 PATH 才能全局调用，否则请在 `cli/` 目录下使用 `.\nf.exe`。全局安装（PowerShell）：
->
-> ```powershell
-> Copy-Item .\nf.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\"
-> ```
->
-> 该目录默认已在系统 PATH 中；`nanofile-cli.exe` 可用同样方式复制。
+#### 一行命令安装（推荐）
+
+`nf.exe` 不随商店安装包分发。安装桌面端后，在 **PowerShell** 中执行一条命令，即可下载二进制、落地到 `%LOCALAPPDATA%\Programs\NanoFile\bin` 并自动写入用户级 PATH：
+
+```powershell
+irm https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/scripts/install.ps1 | iex
+```
+
+脚本同时生成 `nf` 与 `nanofile-cli` 两个命令，校验下载内容后调用 `nf version` 自检。**新开一个终端窗口**后运行 `nf version` 验证；日后升级只需重复执行同一条命令。脚本仅在您主动执行时运行，不注册后台任务、不需要管理员权限。
+
+> ⚠️ 若新终端仍提示 `nf` 不是可识别的命令，检查用户级 PATH 是否包含 `%LOCALAPPDATA%\Programs\NanoFile\bin`，或重跑上述命令。安装前已打开的窗口不会自动刷新 PATH。
+
+#### 手动安装（备选）
+
+不便于执行远程脚本时，可在 `cli/` 目录下手动复制到已在 PATH 中的目录：
+
+```powershell
+Copy-Item .\nf.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\"
+Copy-Item .\nanofile-cli.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\"
+```
+
+`WindowsApps` 默认已在系统 PATH 中；未复制时请在 `cli/` 目录下使用 `.\nf.exe`。以下命令中的裸 `nf` 均假定已完成上述任一安装方式。
 
 - **毫秒级全盘极速检索**：`nf search "财务报表" --ext xlsx --limit 10`
 - **读取文件内容**：`nf cat "D:\docs\config.json" --limit 500`
@@ -239,7 +261,13 @@ Install NanoFile from the Microsoft Store:
 - 🛒 **Web**: [Microsoft Store Web Page](https://apps.microsoft.com/detail/9pgwd50gwcjw)
 - ⚡ **Protocol**: `ms-windows-store://pdp/?ProductId=9PGWD50GWCJW`
 
-> The Store package registers a single execution alias, `NanoFile.exe` (case-insensitive), in `%LOCALAPPDATA%\Microsoft\WindowsApps`, so MCP configs can use `nanofile.exe`. The `nf.exe` CLI is **not** included in the Store package and is **not** auto-registered: copy [`cli/nf.exe`](cli/nf.exe) into a PATH directory (for example `%LOCALAPPDATA%\Microsoft\WindowsApps`) to use `nf` globally.
+> The Store package registers a single execution alias, `NanoFile.exe` (case-insensitive), in `%LOCALAPPDATA%\Microsoft\WindowsApps`, so MCP configs can use `nanofile.exe`. The `nf.exe` CLI is **not** included in the Store package and is **not** auto-registered; install it with the one-line command below (see section 3).
+
+> **Next step (optional)**: to use `nf` in any terminal, run once in PowerShell after installing the desktop app:
+>
+> ```powershell
+> irm https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/scripts/install.ps1 | iex
+> ```
 
 ### ⚙️ 2. MCP Configuration (ServerConfig)
 
@@ -261,7 +289,15 @@ Local STDIO service. No public endpoint required — it relies only on the execu
 
 ### ⚡ 3. Native CLI Usage (`nf`)
 
-A precompiled single-binary native tool [`nf.exe`](cli/nf.exe) is included under [`cli/`](cli/). It is distributed separately from the Store package and needs the NanoFile desktop app at runtime. The bare `nf` commands below assume it has been copied into a PATH directory; otherwise run `.\nf.exe` from `cli/`:
+A precompiled single-binary native tool [`nf.exe`](cli/nf.exe) is included under [`cli/`](cli/). It is distributed separately from the Store package and needs the NanoFile desktop app at runtime.
+
+**One-line install (recommended)** — run in PowerShell after installing the desktop app. It downloads `nf.exe` and `nanofile-cli.exe` into `%LOCALAPPDATA%\Programs\NanoFile\bin` and adds that directory to User PATH:
+
+```powershell
+irm https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/scripts/install.ps1 | iex
+```
+
+Open a new terminal and verify with `nf version`. Re-run the same command to upgrade. The installer runs only when you invoke it: no background task, no admin rights. Alternatively, copy both binaries from `cli/` into `%LOCALAPPDATA%\Microsoft\WindowsApps\` (already on PATH) manually. The bare `nf` commands below assume either install route is complete; otherwise run `.\nf.exe` from `cli/`.
 
 ```bash
 # Instant whole-disk search

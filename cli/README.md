@@ -3,7 +3,7 @@
 ## 1. 概述
 
 本目录下随附了预编译的 Windows 原生命令行工具 [`nf.exe`](./nf.exe) 与等价别名 [`nanofile-cli.exe`](./nanofile-cli.exe)（单文件约 330 KB）。
-二者内容完全相同，可在本目录直接调用；若需在任意终端全局使用，必须手动复制到用户级 PATH 目录（如 `%LOCALAPPDATA%\Microsoft\WindowsApps`）。
+二者内容完全相同，可在本目录直接调用；若需在任意终端全局使用，推荐执行一行安装命令（自动写入用户级 PATH），或手动复制到 PATH 目录。
 `nf` 采用轻量客户端代理架构（Thin CLI），作为与 NanoFile 桌面端通信的高效命令行桥梁，帮助开发者和 AI Agent 在终端中直接调用 NanoFile 强大的本地文件管理能力。
 
 ### 核心特性
@@ -17,15 +17,22 @@
 
 - 运行 `nf.exe` 需要本机已安装 **NanoFile 桌面客户端**（推荐前往微软应用商店下载安装）。
 - 商店 MSIX 安装包**不包含 `nf.exe`，也不会注册 `nf` 执行别名**；本工具随 `nanofile-connector` 单独分发。
-- 全局使用需手动加入 PATH（PowerShell）：
+- **一行命令安装（推荐）**：安装桌面端后，在 PowerShell 中执行：
+
+  ```powershell
+  irm https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/scripts/install.ps1 | iex
+  ```
+
+  脚本下载二进制到 `%LOCALAPPDATA%\Programs\NanoFile\bin`，生成 `nf` 与 `nanofile-cli`，写入用户级 PATH 并运行 `nf version` 自检。新开终端后执行 `nf version` 验证；重复执行同一命令即为升级。
+
+- **手动安装（备选）**：在本目录使用 `.\nf.exe`，或复制到已在 PATH 中的目录：
 
   ```powershell
   Copy-Item .\nf.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\"
   Copy-Item .\nanofile-cli.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\"
   ```
 
-  该目录默认已在系统 PATH 中，复制后即可在任意终端执行 `nf` / `nanofile-cli`；未复制时请在 `cli/` 目录下使用 `.\nf.exe`。
-
+- 若 `nf` 提示命令不存在，请确认已新开终端，或检查用户级 PATH 是否包含上述安装目录。
 - 若未检测到桌面客户端，工具将输出友好的安装引导提示。
 
 ---
