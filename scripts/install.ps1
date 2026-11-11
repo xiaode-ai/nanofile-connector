@@ -31,13 +31,13 @@ if ($payload.Length -lt 100000 -or $payload[0] -ne 0x4D -or $payload[1] -ne 0x5A
 Move-Item -LiteralPath $tempPath -Destination $exePath -Force
 Copy-Item -LiteralPath $exePath -Destination $aliasPath -Force
 
-# Register the bin directory once on User PATH; re-running the command upgrades in place.
+# Prepend the bin directory on User PATH so a fresh nf.exe wins over any stale copy already on PATH.
 Write-Host "[2/4] Registering $installDir on User PATH ..." -ForegroundColor Cyan
 $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
 if ($null -eq $userPath) { $userPath = "" }
 $entries = @($userPath.Split(";") | Where-Object { $_ -and ($_ -ne $installDir) })
-[Environment]::SetEnvironmentVariable("PATH", (($entries + $installDir) -join ";"), "User")
-$env:PATH = "$env:PATH;$installDir"
+[Environment]::SetEnvironmentVariable("PATH", ((@($installDir) + $entries) -join ";"), "User")
+$env:PATH = "$installDir;$env:PATH"
 
 # Verify through the real binary; a missing desktop client is reported separately from a broken download.
 Write-Host "[3/4] Verifying ..." -ForegroundColor Cyan

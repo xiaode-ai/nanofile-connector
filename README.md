@@ -155,7 +155,7 @@ irm https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/scripts/
 
 脚本同时生成 `nf` 与 `nanofile-cli` 两个命令，校验下载内容后调用 `nf version` 自检。**新开一个终端窗口**后运行 `nf version` 验证；日后升级只需重复执行同一条命令。脚本仅在您主动执行时运行，不注册后台任务、不需要管理员权限。
 
-> ⚠️ 若新终端仍提示 `nf` 不是可识别的命令，检查用户级 PATH 是否包含 `%LOCALAPPDATA%\Programs\NanoFile\bin`，或重跑上述命令。安装前已打开的窗口不会自动刷新 PATH。
+> ⚠️ 安装目录会被置于用户级 PATH 首位，可用 `(Get-Command nf).Source` 确认指向 `%LOCALAPPDATA%\Programs\NanoFile\bin\nf.exe`。若新终端提示命令不存在，检查用户级 PATH 或重跑上述命令；安装前已打开的窗口不会自动刷新 PATH。
 
 #### 手动安装（备选）
 
@@ -297,7 +297,7 @@ A precompiled single-binary native tool [`nf.exe`](cli/nf.exe) is included under
 irm https://raw.githubusercontent.com/xiaode-ai/nanofile-connector/main/scripts/install.ps1 | iex
 ```
 
-Open a new terminal and verify with `nf version`. Re-run the same command to upgrade. The installer runs only when you invoke it: no background task, no admin rights. Alternatively, copy both binaries from `cli/` into `%LOCALAPPDATA%\Microsoft\WindowsApps\` (already on PATH) manually. The bare `nf` commands below assume either install route is complete; otherwise run `.\nf.exe` from `cli/`.
+Open a new terminal and verify with `nf version`; `(Get-Command nf).Source` should point to the new bin directory. Re-run the same command to upgrade. The bin directory is prepended to User PATH so the fresh binary wins over any stale `nf.exe` already on PATH. The installer runs only when you invoke it: no background task, no admin rights. Alternatively, copy both binaries from `cli/` into `%LOCALAPPDATA%\Microsoft\WindowsApps\` (already on PATH) manually. The bare `nf` commands below assume either install route is complete; otherwise run `.\nf.exe` from `cli/`.
 
 ```bash
 # Instant whole-disk search
